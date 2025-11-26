@@ -126,6 +126,24 @@ class FrontEnd(mp.Process):
         self.reset = False
 
     def tracking(self, cur_frame_idx, viewpoint):
+        if self.config["Training"]["use_gt_pose"]:
+            viewpoint.update_RT(viewpoint.R_gt, viewpoint.T_gt)
+            render_pkg = render(
+                viewpoint, self.gaussians, self.pipeline_params, self.background
+            )
+            self.q_main2vis.put(
+                gui_utils.GaussianPacket(
+                    current_frame=viewpoint,
+                    gtcolor=viewpoint.original_image,
+                    gtdepth=viewpoint.depth
+                    if not self.monocular
+                    else np.zeros((viewpoint.image_height, viewpoint.image_width)),
+                )
+            )
+            
+            self.median_depth = get_median_depth(render_pkg["depth"], render_pkg["opacity"])
+            return render_pkg
+
         prev = self.cameras[cur_frame_idx - self.use_every_n_frames]
         viewpoint.update_RT(prev.R, prev.T)
 

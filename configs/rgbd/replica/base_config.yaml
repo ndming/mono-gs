@@ -1,7 +1,7 @@
 Results:
   save_results: True
-  save_dir: "results"
-  save_trj: True
+  save_dir: "output"
+  save_trj: False
   save_trj_kf_intv: 20
   use_gui: True
   eval_rendering: False
@@ -36,6 +36,7 @@ Training:
   init_gaussian_reset: 500
   init_gaussian_th: 0.005
   init_gaussian_extent: 30
+  use_gt_pose: True # True to disable pose optimization
   tracking_itr_num: 100
   mapping_itr_num: 150
   gaussian_update_every: 150
